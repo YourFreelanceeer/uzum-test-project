@@ -32,7 +32,7 @@
 
       // Отправляем на GAS, включая userId
       const body = { userId, lat, lng, accuracy };
-      const resp = await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+      const resp = await fetch('https://script.google.com/macros/s/AKfycbxYH5jzlAKvfbiMnqp3QCsg0tCJd1-MVS6ZTVK8oRFTh7_nDV7QNM3WjHE6oPVXQJK1/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -47,6 +47,7 @@
 
 </body>
 </html>
+
 
 
 
