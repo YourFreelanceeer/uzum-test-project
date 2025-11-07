@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>body{font-family:Arial;padding:12px;} button{padding:10px 14px;}</style>
+</head>
+<body>
+  <h3>Подтвердите локацию</h3>
+  <p id="info">Нажмите кнопку и разрешите доступ к местоположению.</p>
+  <button id="btn">Отправить локацию</button>
+  <pre id="out"></pre>
+
+  <script>
+    const out = document.getElementById('out');
+    document.getElementById('btn').onclick = () => {
+      if (!navigator.geolocation) {
+        out.textContent = 'Геолокация не поддерживается';
+        return;
+      }
+      out.textContent = 'Получаем геолокацию...';
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const accuracy = pos.coords.accuracy;
+        out.textContent = `lat=${lat}\nlng=${lng}\naccuracy=${accuracy}`;
+
+        // Отправляем на GAS
+        const body = { userId: 'USER_ID_123', lat, lng, accuracy };
+        const resp = await fetch(window.location.origin + window.location.pathname, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const js = await resp.json();
+        out.textContent += '\n\nРезультат: ' + JSON.stringify(js);
+      }, (err) => {
+        out.textContent = 'Ошибка получения локации: ' + err.message;
+      }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+    };
+  </script>
+</body>
+</html>
