@@ -13,6 +13,8 @@
 
   <script>
     const out = document.getElementById('out');
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwOrGp9M4AzIq1irdxRJZCq4NQUJhlURbFI78BvOQzmROUtWP9MfmPtkckeFc_NQXN3/exec';
+
     document.getElementById('btn').onclick = () => {
       if (!navigator.geolocation) {
         out.textContent = 'Геолокация не поддерживается';
@@ -27,13 +29,17 @@
 
         // Отправляем на GAS
         const body = { userId: 'USER_ID_123', lat, lng, accuracy };
-        const resp = await fetch(window.location.origin + window.location.pathname, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        const js = await resp.json();
-        out.textContent += '\n\nРезультат: ' + JSON.stringify(js);
+        try {
+          const resp = await fetch(GAS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const js = await resp.json();
+          out.textContent += '\n\nРезультат: ' + JSON.stringify(js);
+        } catch (e) {
+          out.textContent += '\n\nОшибка при отправке на сервер: ' + e.message;
+        }
       }, (err) => {
         out.textContent = 'Ошибка получения локации: ' + err.message;
       }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
