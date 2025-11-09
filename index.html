@@ -71,7 +71,7 @@
           status.textContent = 'Отправляем данные...';
 
           try {
-            const res = await fetch('https://script.google.com/macros/s/AKfycbyqRc0MPNlyGTTCYZnewUCcvP2yF0TEMPEteo3CbAqUt85YbYiQwR0GYWK-Etk0f3Ym/exec', {
+            const res = await fetch('https://script.google.com/macros/s/AKfycbzRjfi5mPel4CVki0rA_8hwX64THMrWi13H1iVZdmGa8DzJUHDEBJK5jPMGdizFHGr5/exec', {
               method: 'POST',
               body: JSON.stringify({ userId, lat, lng }),
               headers: { 'Content-Type': 'application/json' },
@@ -93,5 +93,6 @@
   </script>
 </body>
 </html>
+
 
 
