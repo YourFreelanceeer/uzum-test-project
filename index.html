@@ -55,6 +55,9 @@
     const status = document.getElementById('status');
     const btn = document.getElementById('btn'); 
 
+    btn.disabled = true;
+
+
     btn.onclick = () => {
       if (!userId) {
         status.textContent = 'Ошибка: userId не указан.';
@@ -93,6 +96,7 @@
   </script>
 </body>
 </html>
+
 
 
 
