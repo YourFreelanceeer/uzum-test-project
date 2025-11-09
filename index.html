@@ -1,54 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <base target="_top">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>body{font-family:Arial;padding:12px;} button{padding:10px 14px;}</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Подтверждение геолокации</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 14px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background: #4285f4;
+      color: white;
+      cursor: pointer;
+      width: 80%;
+      max-width: 300px;
+    }
+    button:disabled {
+      background: #999;
+      cursor: default;
+    }
+    p {
+      margin-top: 20px;
+      font-size: 1rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+  </style>
 </head>
 <body>
-  <h3>Подтвердите локацию</h3>
-  <p id="info">Нажмите кнопку и разрешите доступ к местоположению.</p>
-  <button id="btn">Отправить локацию</button>
-  <pre id="out"></pre>
+  <h1>📍 Подтверждение геолокации</h1>
+  <button id="btn">Отправить геолокацию</button>
+  <p id="status"></p>
 
-<script>
-  const out = document.getElementById('out');
+  <script>
+    const userId = new URLSearchParams(window.location.search).get('userId');
+    const status = document.getElementById('status');
+    const btn = document.getElementById('btn'); 
 
-  // Получаем userId из URL
-  const params = new URLSearchParams(window.location.search);
-  const userId = params.get('userId'); // Например: '7794008932'
+    btn.onclick = () => {
+      if (!userId) {
+        status.textContent = 'Ошибка: userId не указан.';
+        return;
+      }
 
-  document.getElementById('btn').onclick = () => {
-    if (!navigator.geolocation) {
-      out.textContent = 'Геолокация не поддерживается';
-      return;
-    }
-    out.textContent = 'Получаем геолокацию...';
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      const accuracy = pos.coords.accuracy;
-      out.textContent = `lat=${lat}\nlng=${lng}\naccuracy=${accuracy}`;
+      status.textContent = 'Получаем геолокацию...';
 
-      // Отправляем на GAS, включая userId
-      const body = { userId, lat, lng, accuracy };
-      const resp = await fetch('https://script.google.com/macros/s/AKfycbyUnNAD54ffbyxJMP3K3q6vK8rrIRdUCqarSPbz1_KYrwatuNcpcHu6PLdfkulHvcnc/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      const js = await resp.json();
-      out.textContent += '\n\nРезультат: ' + JSON.stringify(js);
-    }, (err) => {
-      out.textContent = 'Ошибка получения локации: ' + err.message;
-    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
-  };
-</script>
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
 
+          status.textContent = 'Отправляем данные...';
+
+          try {
+            const res = await fetch('https://script.google.com/macros/s/AKfycbyqRc0MPNlyGTTCYZnewUCcvP2yF0TEMPEteo3CbAqUt85YbYiQwR0GYWK-Etk0f3Ym/exec', {
+              method: 'POST',
+              body: JSON.stringify({ userId, lat, lng }),
+              headers: { 'Content-Type': 'application/json' },
+            });
+
+            const data = await res.json();
+            status.textContent = data.message;
+            btn.disabled = true;
+          } catch (err) {
+            status.textContent = 'Ошибка при отправке данных.';
+          }
+        },
+        (err) => {
+          status.textContent = 'Ошибка: не удалось получить координаты.';
+        },
+        { enableHighAccuracy: true }
+      );
+    };
+  </script>
 </body>
 </html>
-
-
-
-
-
