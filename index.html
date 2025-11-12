@@ -49,7 +49,7 @@
         status.textContent = 'Отправляем данные...';
 
         try {
-          const res = await fetch('https://script.google.com/macros/s/AKfycbyC5m1HdJw0JFNsvqbovsBy5uceMFafGHQoxaxIqkUhEdZ4uNLfuDOdWjrT2Xz8DL0B/exec', {
+          const res = await fetch('https://script.google.com/macros/s/AKfycbwz9l_bItWXMmkXkclAvt-RQ0BGGZzC3AV9H0SvR2DNSJNFP-LMlsHOZKPvt5XslO9I/exec', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ lat, lon })
@@ -73,4 +73,5 @@
   </script>
 </body>
 </html>
+
 
