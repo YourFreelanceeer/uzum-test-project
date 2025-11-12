@@ -1,13 +1,44 @@
 <!DOCTYPE html>
 <html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Отправка геолокации</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 60px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: #0078ff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fcc;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: 500;
+    }
+  </style>
+</head>
 <body>
   <h3>Отправка геолокации в Google Таблицу</h3>
   <button onclick="sendGeo()">Отправить</button>
+  <div id="status"></div>
 
   <script>
     async function sendGeo() {
+      const status = document.getElementById('status');
+      status.textContent = 'Получаем геолокацию...';
+
       if (!navigator.geolocation) {
-        alert('Ваш браузер не поддерживает геолокацию');
+        status.textContent = '❌ Ваш браузер не поддерживает геолокацию';
         return;
       }
 
@@ -15,20 +46,30 @@
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        const res = await fetch('https://script.google.com/macros/s/AKfycbz1--TIPDzYu7ZVpyfA8lFde96q1t8KgCQTPFwU66fHQg44IArzEvqTelLQsmCEbiH9/exec', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ lat, lon })
-        });
+        status.textContent = 'Отправляем данные...';
 
-        const json = await res.json();
-        console.log(json);
-        alert('Геолокация отправлена!');
+        try {
+          const res = await fetch('https://script.google.com/macros/s/AKfycbz1--TIPDzYu7ZVpyfA8lFde96q1t8KgCQTPFwU66fHQg44IArzEvqTelLQsmCEbiH9/exec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lat, lon })
+          });
+
+          const json = await res.json();
+
+          if (json.ok) {
+            status.textContent = '✅ Геолокация успешно отправлена!';
+          } else {
+            status.textContent = '⚠️ Ошибка при отправке: ' + (json.error || 'Неизвестная ошибка');
+          }
+        } catch (err) {
+          status.textContent = '⚠️ Ошибка сети: ' + err.message;
+        }
+
       }, err => {
-        alert('Ошибка получения геолокации: ' + err.message);
+        status.textContent = '❌ Ошибка получения геолокации: ' + err.message;
       });
     }
   </script>
 </body>
 </html>
-
