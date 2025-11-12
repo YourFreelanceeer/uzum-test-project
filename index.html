@@ -46,7 +46,7 @@
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        status.textContent = 'Отправляем данные...';
+        status.textContent = 'Отправляем данные...' + lat;
 
         try {
           const res = await fetch('https://script.google.com/macros/s/AKfycbwz9l_bItWXMmkXkclAvt-RQ0BGGZzC3AV9H0SvR2DNSJNFP-LMlsHOZKPvt5XslO9I/exec', {
@@ -73,5 +73,6 @@
   </script>
 </body>
 </html>
+
 
 
