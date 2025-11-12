@@ -15,7 +15,7 @@
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        const res = await fetch('https://script.google.com/macros/s/AKfycbxitI9RVP54XH7zcXe01hmZIlAgjPaKqTNLh9VJVyYPBIb5duae_UT1xLWchxOMywJF/exec', {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbz1--TIPDzYu7ZVpyfA8lFde96q1t8KgCQTPFwU66fHQg44IArzEvqTelLQsmCEbiH9/exec', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ lat, lon })
@@ -31,3 +31,4 @@
   </script>
 </body>
 </html>
+
