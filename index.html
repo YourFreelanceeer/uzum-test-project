@@ -1,106 +1,32 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Подтверждение геолокации</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
-      background: #f9f9f9;
-      color: #333;
-      text-align: center;
-    }
-    h1 {
-      font-size: 1.4rem;
-      margin-bottom: 20px;
-    }
-    button {
-      padding: 14px 24px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 10px;
-      background: #4285f4;
-      color: white;
-      cursor: pointer;
-      width: 80%;
-      max-width: 300px;
-    }
-    button:disabled {
-      background: #999;
-      cursor: default;
-    }
-    p {
-      margin-top: 20px;
-      font-size: 1rem;
-      line-height: 1.4;
-      word-wrap: break-word;
-    }
-  </style>
-</head>
 <body>
-  <h1>📍 Подтверждение геолокации</h1>
-  <button id="btn">Отправить геолокацию</button>
-  <p id="status"></p>
+<h3>Отправка геолокации в Google Таблицу</h3>
+<button onclick="sendGeo()">Отправить</button>
 
-  <script>
-    const userId = new URLSearchParams(window.location.search).get('userId');
-    const status = document.getElementById('status');
-    const btn = document.getElementById('btn'); 
+<script>
+async function sendGeo() {
+  if (!navigator.geolocation) {
+    alert('Ваш браузер не поддерживает геолокацию');
+    return;
+  }
 
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
 
-
-    btn.onclick = () => {
-      if (!userId) {
-        status.textContent = 'Ошибка: userId не указан.';
-        return;
-      }
-
-      status.textContent = 'Получаем геолокацию...';
-
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-
-          status.textContent = 'Отправляем данные...';
-
-          try {
-            const res = await fetch('https://script.google.com/macros/s/AKfycby6xzNIAmH_xEXt4M4rU0nC4sEbyhq3ilsmivWdYwChk4YT16qsm7C_aDsEG_OZVGWU/exec', {
-              method: 'POST',
-              body: JSON.stringify({ userId, lat, lng }),
-              headers: { 'Content-Type': 'application/json' },
-            });
-
-            const data = await res.json();
-            status.textContent = data.message;
-            btn.disabled = true;
-          } catch (err) {
-            status.textContent = 'Ошибка при отправке данных.';
-          }
-        },
-        (err) => {
-          status.textContent = 'Ошибка: не удалось получить координаты.';
-        },
-        { enableHighAccuracy: true }
-      );
-    };
-  </script>
+    const res = await fetch('https://script.google.com/macros/s/AKfycbxitI9RVP54XH7zcXe01hmZIlAgjPaKqTNLh9VJVyYPBIb5duae_UT1xLWchxOMywJF/exec', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ lat, lon })
+    });
+    const json = await res.json();
+    console.log(json);
+    alert('Отправлено!');
+  }, err => {
+    alert('Ошибка получения геолокации: ' + err.message);
+  });
+}
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
