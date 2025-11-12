@@ -46,7 +46,7 @@
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        status.textContent = 'Отправляем данные...' + lat;
+        status.textContent = 'Отправляем данные...';
 
         try {
           const res = await fetch('https://script.google.com/macros/s/AKfycbwz9l_bItWXMmkXkclAvt-RQ0BGGZzC3AV9H0SvR2DNSJNFP-LMlsHOZKPvt5XslO9I/exec', {
@@ -63,7 +63,7 @@
             status.textContent = '⚠️ Ошибка при отправке: ' + (json.error || 'Неизвестная ошибка');
           }
         } catch (err) {
-          status.textContent = '⚠️ Ошибка сети: ' + err.message;
+          status.textContent = '⚠️ Ошибка сети: ' + err.message + lat;
         }
 
       }, err => {
@@ -73,6 +73,7 @@
   </script>
 </body>
 </html>
+
 
 
 
