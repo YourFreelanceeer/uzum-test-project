@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="ru">
 <body>
-<h3>Отправка геолокации в Google Таблицу</h3>
-<button onclick="sendGeo()">Отправить</button>
+  <h3>Отправка геолокации в Google Таблицу</h3>
+  <button onclick="sendGeo()">Отправить</button>
 
-<script>
-async function sendGeo() {
-  if (!navigator.geolocation) {
-    alert('Ваш браузер не поддерживает геолокацию');
-    return;
-  }
+  <script>
+    async function sendGeo() {
+      if (!navigator.geolocation) {
+        alert('Ваш браузер не поддерживает геолокацию');
+        return;
+      }
 
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
 
-    const res = await fetch('https://script.google.com/macros/s/AKfycbwLABhQ9PZ4td_wfz7gkJb2H6AeW_GlpGmD3dWy0uBeSEXj_mRiTjwmeJ9qUS6mWLdS/exec', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ lat, lon })
-    });
-    const json = await res.json();
-    console.log(json);
-    alert('Отправлено!');
-  }, err => {
-    alert('Ошибка получения геолокации: ' + err.message);
-  });
-}
-</script>
+        const res = await fetch('https://script.google.com/macros/s/AKfycbxitI9RVP54XH7zcXe01hmZIlAgjPaKqTNLh9VJVyYPBIb5duae_UT1xLWchxOMywJF/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lat, lon })
+        });
+
+        const json = await res.json();
+        console.log(json);
+        alert('Геолокация отправлена!');
+      }, err => {
+        alert('Ошибка получения геолокации: ' + err.message);
+      });
+    }
+  </script>
 </body>
 </html>
-
